@@ -3401,7 +3401,7 @@ void aboot_init(const struct app_descriptor *app)
 	if (!check_alarm_boot()) {
 #endif
 		dprintf(SPEW, "Display Init: Start\n");
-		target_display_init(device.display_panel);
+		target_display_init("jd35695_1080p_cmd");
 		dprintf(SPEW, "Display Init: Done\n");
 #if NO_ALARM_DISPLAY
 	}

@@ -52,6 +52,7 @@
 #include "include/panel_hx8379a_truly_fwvga_video.h"
 #include "include/panel_nt35597_wqxga_video.h"
 #include "include/panel_nt35597_wqxga_cmd.h"
+#include "include/panel_jd35695_1080p_cmd.h"
 
 /*---------------------------------------------------------------------------*/
 /* static panel selection variable                                           */
@@ -66,6 +67,7 @@ SHARP_1080P_CMD_PANEL,
 HX8379A_TRULY_FWVGA_VIDEO_PANEL,
 NOVATEK_WQXGA_VIDEO_PANEL,
 NOVATEK_WQXGA_CMD_PANEL,
+JD35695_1080P_CMD_PANEL,
 UNKNOWN_PANEL
 };
 
@@ -83,6 +85,7 @@ static struct panel_list supp_panels[] = {
 	{"hx8379a_truly_fwvga_video", HX8379A_TRULY_FWVGA_VIDEO_PANEL},
 	{"nt35597_wqxga_video", NOVATEK_WQXGA_VIDEO_PANEL},
 	{"nt35597_wqxga_cmd", NOVATEK_WQXGA_CMD_PANEL},
+	{"jd35695_1080p_cmd", JD35695_1080P_CMD_PANEL},
 };
 
 static uint32_t panel_id;
@@ -393,6 +396,32 @@ static bool init_panel_data(struct panel_struct *panelstruct,
 			nt35597_wqxga_cmd_timings, TIMING_SIZE);
 		memcpy(&panelstruct->fbcinfo, &nt35597_wqxga_cmd_fbc,
 				sizeof(struct fb_compression));
+		break;
+	case JD35695_1080P_CMD_PANEL:
+		pan_type = PANEL_TYPE_DSI;
+		pinfo->lcd_reg_en = 0;
+		panelstruct->paneldata    = &jd35695_1080p_cmd_panel_data;
+		panelstruct->panelres     = &jd35695_1080p_cmd_panel_res;
+		panelstruct->color        = &jd35695_1080p_cmd_color;
+		panelstruct->videopanel   = &jd35695_1080p_cmd_video_panel;
+		panelstruct->commandpanel = &jd35695_1080p_cmd_command_panel;
+		panelstruct->state        = &jd35695_1080p_cmd_state;
+		panelstruct->laneconfig   = &jd35695_1080p_cmd_lane_config;
+		panelstruct->paneltiminginfo
+			= &jd35695_1080p_cmd_timing_info;
+		panelstruct->panelresetseq
+					 = &jd35695_1080p_cmd_panel_reset_seq;
+		panelstruct->backlightinfo = &jd35695_1080p_cmd_backlight;
+		pinfo->mipi.panel_on_cmds
+			= jd35695_1080p_cmd_on_command;
+		pinfo->mipi.num_of_panel_on_cmds
+			= JD35695_1080P_CMD_ON_COMMAND;
+		pinfo->mipi.panel_off_cmds
+			= jd35695_1080p_cmd_off_command;
+		pinfo->mipi.num_of_panel_off_cmds
+			= JD35695_1080P_CMD_OFF_COMMAND;
+		memcpy(phy_db->timing,
+			jd35695_1080p_cmd_timings, TIMING_SIZE);
 		break;
 	default:
 	case UNKNOWN_PANEL:
