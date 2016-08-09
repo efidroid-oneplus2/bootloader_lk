@@ -202,7 +202,7 @@ static int usb30_usb_read(void *_buf, unsigned len)
 	if (fastboot_state == STATE_ERROR)
 		goto oops;
 
-	//dprintf(SPEW, "usb_read(): len = %d\n", len);
+	dprintf(SPEW, "usb_read(): len = %d\n", len);
 
 	while (len > 0)
 	{
@@ -234,7 +234,7 @@ static int usb30_usb_read(void *_buf, unsigned len)
 		/* note: req.length is update by callback to reflect the amount of data
 		 * actually read.
 		 */
-		//dprintf(SPEW, "usb_read(): DONE. req.length = %d\n\n", req.length);
+		dprintf(SPEW, "usb_read(): DONE. req.length = %d\n\n", req.length);
 
 		/* For USB3.0 if the data transfer is less than MaxpacketSize, its
 		 * short packet and DWC layer generates transfer complete. App layer
@@ -269,7 +269,7 @@ static int usb30_usb_write(void *buf, unsigned len)
 	if (fastboot_state == STATE_ERROR)
 		goto oops;
 
-	//dprintf(SPEW, "usb_write(): len = %d str = %s\n", len, (char *) buf);
+	dprintf(SPEW, "usb_write(): len = %d str = %s\n", len, (char *) buf);
 
 	/* flush buffer to main memory before giving to udc */
 	arch_clean_invalidate_cache_range((addr_t) buf, len);
@@ -285,8 +285,8 @@ static int usb30_usb_write(void *buf, unsigned len)
 	}
 	event_wait(&txn_done);
 
-	//dprintf(SPEW, "usb_write(): DONE: len = %d req->length = %d str = %s\n",
-	//		len, req.length, (char *) buf);
+	dprintf(SPEW, "usb_write(): DONE: len = %d req->length = %d str = %s\n",
+			len, req.length, (char *) buf);
 
 	if (txn_status < 0) {
 		dprintf(CRITICAL, "usb_write() transaction failed. txn_status = %d\n",
@@ -320,13 +320,13 @@ static int hsusb_usb_read(void *_buf, unsigned len)
 		req->complete = req_complete;
 		r = udc_request_queue(out, req);
 		if (r < 0) {
-			//dprintf(INFO, "usb_read() queue failed\n");
+			dprintf(INFO, "usb_read() queue failed\n");
 			goto oops;
 		}
 		event_wait(&txn_done);
 
 		if (txn_status < 0) {
-			//dprintf(INFO, "usb_read() transaction failed\n");
+			dprintf(INFO, "usb_read() transaction failed\n");
 			goto oops;
 		}
 
@@ -366,12 +366,12 @@ static int hsusb_usb_write(void *buf, unsigned len)
 		req->complete = req_complete;
 		r = udc_request_queue(in, req);
 		if (r < 0) {
-			//dprintf(INFO, "usb_write() queue failed\n");
+			dprintf(INFO, "usb_write() queue failed\n");
 			goto oops;
 		}
 		event_wait(&txn_done);
 		if (txn_status < 0) {
-			//dprintf(INFO, "usb_write() transaction failed\n");
+			dprintf(INFO, "usb_write() transaction failed\n");
 			goto oops;
 		}
 
@@ -584,7 +584,7 @@ static void fastboot_command_loop(void)
 {
 	struct fastboot_cmd *cmd;
 	int r;
-	//dprintf(INFO,"fastboot: processing commands\n");
+	dprintf(INFO,"fastboot: processing commands\n");
 
 	uint8_t *buffer = (uint8_t *)memalign(CACHE_LINE, ROUNDUP(4096, CACHE_LINE));
 	if (!buffer)
@@ -605,7 +605,7 @@ again:
 		r = usb_if.usb_read(buffer, MAX_RSP_SIZE);
 		if (r < 0) break;
 		buffer[r] = 0;
-		//dprintf(INFO,"fastboot: %s\n", buffer);
+		dprintf(INFO,"fastboot: %s\n", buffer);
 
 		fastboot_state = STATE_COMMAND;
 
@@ -659,7 +659,7 @@ int fastboot_init(void *base, unsigned size)
 {
 	char sn_buf[13];
 	thread_t *thr;
-	//dprintf(INFO, "fastboot_init()\n");
+	dprintf(INFO, "fastboot_init()\n");
 
 	download_base = base;
 	download_max = size;
@@ -669,7 +669,7 @@ int fastboot_init(void *base, unsigned size)
 
 	/* setup serialno */
 	target_serialno((unsigned char *) sn_buf);
-	//dprintf(SPEW,"serial number: %s\n",sn_buf);
+	dprintf(SPEW,"serial number: %s\n",sn_buf);
 	surf_udc_device.serialno = sn_buf;
 
 	if(!strcmp(target_usb_controller(), "dwc"))
