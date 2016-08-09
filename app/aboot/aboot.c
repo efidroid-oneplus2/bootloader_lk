@@ -3296,6 +3296,11 @@ bool is_device_locked()
 	return device.is_unlocked ? false:true;
 }
 
+void cmd_oem_print_screen_msg(const char *arg, void *data, unsigned sz) {
+	dprintf(INFO, arg);
+	fastboot_okay("");
+}
+
 /* register commands and variables for fastboot */
 void aboot_fastboot_register_commands(void)
 {
@@ -3329,6 +3334,7 @@ void aboot_fastboot_register_commands(void)
 						{"oem enable-charger-screen", cmd_oem_enable_charger_screen},
 						{"oem disable-charger-screen", cmd_oem_disable_charger_screen},
 						{"oem select-display-panel", cmd_oem_select_display_panel},
+						{"oem printmsg", cmd_oem_print_screen_msg},
 #endif
 						};
 

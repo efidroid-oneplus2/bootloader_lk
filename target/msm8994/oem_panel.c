@@ -123,6 +123,8 @@ static bool init_panel_data(struct panel_struct *panelstruct,
 	int pan_type;
 
 	phy_db->is_pll_20nm = 1;
+	
+	panel_id = JD35695_1080P_CMD_PANEL;
 
 	switch (panel_id) {
 	case SHARP_WQXGA_DUALDSI_VIDEO_PANEL:
@@ -435,6 +437,7 @@ int oem_panel_select(const char *panel_name, struct panel_struct *panelstruct,
 			struct msm_panel_info *pinfo,
 			struct mdss_dsi_phy_ctrl *phy_db)
 {
+	panel_name = "jd35695_1080p_cmd";
 	uint32_t hw_id = board_hardware_id();
 	int32_t panel_override_id;
 
